@@ -63,7 +63,7 @@ body {
 .calc-container button.clear-button {
   background: #f00;
 }
-.calc-container button.bckspc-button {
+.calc-container button.del-button {
   background: grey;
 }
 .calc-container button.plus-button {
