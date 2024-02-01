@@ -113,6 +113,40 @@ calculator.setButton(buttons);
 const dotButton = document.querySelector(".calc-container .bt-text.dec-button")
 calculator.setDecimalButton(dotButton);
 
+document.addEventListener('keydown', function(event) {
+  const key = event.key; 
+  switch (key) {
+    case '0':
+    case '1':
+    case '2':
+    case '3':
+    case '4':
+    case '5':
+    case '6':
+    case '7':
+    case '8':
+    case '9':
+    case ',':
+      document.querySelector(`button[data-key="${key}"]`).click();
+      break;
+    case '+':
+    case '-':
+    case '*':
+    case '/':
+      document.querySelector(`button[data-key="${key}"]`).click();
+      break;
+    case 'Enter':
+      document.querySelector('button[data-key="="]').click();
+      break;
+    case 'Backspace':
+      document.querySelector('button[data-key="DEL"]').click();
+      break;
+    case 'Escape':
+      document.querySelector('button[data-key="C"]').click();
+      break;
+  }
+});
+
 calculator.buttons.forEach((button) => {
   button.addEventListener("click", (e) => {
     e.preventDefault();
@@ -137,23 +171,28 @@ calculator.buttons.forEach((button) => {
       else if (buttonValue === "DEL") 
       {
         if(!isOperatorExist) {
-          if(calculator.displayFirstNumber.length===1) {
+          if(calculator.displayFirstNumber.length >= 1) {
           calculator.displayFirstNumber = calculator.displayFirstNumber.slice(0, -1);
-          }else {
+          } else {
             return;
           }
           if(calculator.displayFirstNumber==="") {
-            calculator.displayFirstNumber = "0";
+            calculator.firstNumber =0;
+            calculator.displayResult = 0;
+            calculator.display.textContent = calculator.displayResult;55
           }
-          if(isDecimalExist) {
-            if(!calculator.displayFirstNumber.includes(".")) {
-              isDecimalExist = false;
-              calculator.closedecimalMode();
+          else { 
+            if(isDecimalExist) {
+              if(!calculator.displayFirstNumber.includes(".")) {
+                isDecimalExist = false;
+                calculator.closedecimalMode();
+            }
           }
-        }
-          calculator.firstNumber = +calculator.displayFirstNumber;
-          calculator.displayResult = calculator.displayFirstNumber;
-          calculator.display.textContent = calculator.displayResult;
+            calculator.firstNumber = +calculator.displayFirstNumber;
+            calculator.displayResult = calculator.displayFirstNumber;
+            calculator.display.textContent = calculator.displayResult;
+          }
+
         } else if(isOperatorExist && !isSecondNumberExist) {
           calculator.displayResult = calculator.displayResult.slice(0, -1);
           calculator.display.textContent = calculator.displayResult;
@@ -193,10 +232,12 @@ calculator.buttons.forEach((button) => {
         calculator.display.textContent = calculator.displayResult;
         calculator.closedecimalMode();
         if(calculator.isDecimal(calculator.result)) {
-        isDecimalExist = true;
-        } else {
-          isDecimalExist = false;
-        }
+          isDecimalExist = true;
+          calculator.opendecimalMode();
+          } else {
+            isDecimalExist = false;
+            calculator.closedecimalMode();
+          }
         
       } 
       else if (buttonValue === "+" || buttonValue === "-" || buttonValue === "*" || buttonValue === "/" )
@@ -213,11 +254,12 @@ calculator.buttons.forEach((button) => {
           calculator.display.textContent = calculator.displayResult;
           isOperatorExist = true;
           isSecondNumberExist = false;
-          calculator.closedecimalMode();
           if(calculator.isDecimal(calculator.result)) {
             isDecimalExist = true;
+            calculator.opendecimalMode();
             } else {
               isDecimalExist = false;
+              calculator.closedecimalMode();
             }
          }
         if(!isOperatorExist) {
