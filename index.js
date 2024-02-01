@@ -137,7 +137,11 @@ calculator.buttons.forEach((button) => {
       else if (buttonValue === "DEL") 
       {
         if(!isOperatorExist) {
+          if(calculator.displayFirstNumber.length===1) {
           calculator.displayFirstNumber = calculator.displayFirstNumber.slice(0, -1);
+          }else {
+            return;
+          }
           if(calculator.displayFirstNumber==="") {
             calculator.displayFirstNumber = "0";
           }
