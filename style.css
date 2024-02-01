@@ -85,9 +85,21 @@ body {
 .calc-container .display-text{
     top: 0;
     right: 0;
-    font-size: 3.5em;
+    font-size: 3em;
     color: black;
     text-transform: uppercase;
     font-weight: 500;
     letter-spacing: 1px;
+}
+
+.calc-container .bt-text.deactivated {
+  cursor: not-allowed;
+  opacity: 0.5;
+  animation: fadeOut 1s forwards;
+}
+
+@keyframes fadeOut {
+  to {
+    opacity: 0.5;
+  }
 }
