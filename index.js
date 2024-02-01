@@ -253,14 +253,9 @@ calculator.buttons.forEach((button) => {
           calculator.displayResult = `${calculator.result}${calculator.displayOperator}`;
           calculator.display.textContent = calculator.displayResult;
           isOperatorExist = true;
-          isSecondNumberExist = false;
-          if(calculator.isDecimal(calculator.result)) {
-            isDecimalExist = true;
-            calculator.opendecimalMode();
-            } else {
-              isDecimalExist = false;
-              calculator.closedecimalMode();
-            }
+          isSecondNumberExist = true;
+          isDecimalExist = false;
+          calculator.closedecimalMode();
          }
         if(!isOperatorExist) {
             calculator.operator = buttonValue;
