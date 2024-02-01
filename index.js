@@ -33,10 +33,18 @@ let calculator = {
   setDecimalButton: function(element) {
     this.decimalButton = element;
   },
-  hasoneDecimalPoint: function(number) {
-        const numberString = number.toString();
-        const parts = numberString.split('.');
-        return parts.length === 2;
+  hasOneDecimalPoint: function(number) {
+    const numberString = number.toString();
+    const parts = numberString.split('.');
+  
+    if (parts.length === 2 && parts[1].length === 1) {
+        const integerPartIsValid = !isNaN(parts[0]) && parts[0] !== '';
+        const decimalPartIsValid = !isNaN(parts[1]) && parts[1] !== '';
+        
+        return integerPartIsValid && decimalPartIsValid;
+    } else {
+        return false;
+    }
   },
   isDecimal: function(number) {
     if(number%1!==0) {
@@ -128,7 +136,43 @@ calculator.buttons.forEach((button) => {
       } 
       else if (buttonValue === "DEL") 
       {
-        
+        if(!isOperatorExist) {
+          calculator.displayFirstNumber = calculator.displayFirstNumber.slice(0, -1);
+          if(calculator.displayFirstNumber==="") {
+            calculator.displayFirstNumber = "0";
+          }
+          if(isDecimalExist) {
+            if(!calculator.displayFirstNumber.includes(".")) {
+              isDecimalExist = false;
+              calculator.closedecimalMode();
+          }
+        }
+          calculator.firstNumber = +calculator.displayFirstNumber;
+          calculator.displayResult = calculator.displayFirstNumber;
+          calculator.display.textContent = calculator.displayResult;
+        } else if(isOperatorExist && !isSecondNumberExist) {
+          calculator.displayResult = calculator.displayResult.slice(0, -1);
+          calculator.display.textContent = calculator.displayResult;
+          calculator.operator = "";
+          calculator.displayOperator = "";
+          isOperatorExist = false;
+          
+        } else {
+          calculator.displaySecondNumber = calculator.displaySecondNumber.slice(0, -1);
+          if(calculator.displaySecondNumber==="") {
+            calculator.secondNumber = 0;
+          } else {
+            calculator.secondNumber = +calculator.displaySecondNumber;
+          }
+          if(isDecimalExist) {
+            if(!calculator.displaySecondNumber.includes(".")) {
+              isDecimalExist = false;
+              calculator.closedecimalMode();
+          }
+        }
+          calculator.displayResult = calculator.displayFirstNumber+calculator.displayOperator+calculator.displaySecondNumber;
+          calculator.display.textContent = calculator.displayResult;
+        }
       } 
       else if (buttonValue === "=") 
       {
@@ -144,7 +188,12 @@ calculator.buttons.forEach((button) => {
         calculator.displayResult = `${calculator.result}`;
         calculator.display.textContent = calculator.displayResult;
         calculator.closedecimalMode();
-        isDecimalExist = false;
+        if(calculator.isDecimal(calculator.result)) {
+        isDecimalExist = true;
+        } else {
+          isDecimalExist = false;
+        }
+        
       } 
       else if (buttonValue === "+" || buttonValue === "-" || buttonValue === "*" || buttonValue === "/" )
       {
@@ -161,7 +210,11 @@ calculator.buttons.forEach((button) => {
           isOperatorExist = true;
           isSecondNumberExist = false;
           calculator.closedecimalMode();
-          isDecimalExist = false;
+          if(calculator.isDecimal(calculator.result)) {
+            isDecimalExist = true;
+            } else {
+              isDecimalExist = false;
+            }
          }
         if(!isOperatorExist) {
             calculator.operator = buttonValue;
@@ -182,7 +235,7 @@ calculator.buttons.forEach((button) => {
       }
     } else {        
         if(!isOperatorExist) {
-          if(!calculator.hasoneDecimalPoint(calculator.displayFirstNumber)) {
+          if(!calculator.hasOneDecimalPoint(calculator.displayFirstNumber)) {
             if(isDecimalExist) {
               calculator.displayFirstNumber = calculator.displayResult+buttonValue;
               calculator.firstNumber = +calculator.displayFirstNumber;
@@ -196,8 +249,8 @@ calculator.buttons.forEach((button) => {
               calculator.display.textContent = calculator.displayResult;
             }
           }
-        } else if(!isSecondNumberExist && isOperatorExist) {
-          if(!calculator.hasoneDecimalPoint(calculator.displaySecondNumber)) {
+        } else {
+          if(!calculator.hasOneDecimalPoint(calculator.displaySecondNumber)) {
             if(isDecimalExist) {
               calculator.displaySecondNumber = `${calculator.displaySecondNumber}.${buttonValue}`;
               calculator.secondNumber = +calculator.displaySecondNumber;
@@ -209,6 +262,7 @@ calculator.buttons.forEach((button) => {
               calculator.displayResult += buttonValue;
               calculator.display.textContent = calculator.displayResult;  
             }
+            isSecondNumberExist = true;
           }
         }
     }
